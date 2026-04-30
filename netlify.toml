@@ -1,0 +1,8 @@
+[build]
+  base = "voting_app"
+  command = "bash ../scripts/netlify_build_flutter.sh"
+  publish = "build/web"
+
+[build.environment]
+  FLUTTER_VERSION = "3.22.3"
+
