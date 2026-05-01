@@ -5,4 +5,4 @@ nixPkgs = ["php82", "php82Extensions.mbstring", "php82Extensions.xml", "php82Ext
 cmds = ["composer install --no-dev --optimize-autoloader"]
 
 [start]
-cmd = "php artisan migrate --force && php -S 0.0.0.0:8000 -t public"
+cmd = "php artisan migrate --force && php artisan config:cache && php artisan route:cache && php-fpm82 -D && caddy run --config /Caddyfile"
