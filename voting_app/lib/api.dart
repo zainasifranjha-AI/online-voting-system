@@ -1,7 +1,7 @@
 class Api {
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://127.0.0.1:8000',
+    defaultValue: 'https://online-voting-system-production-4f0b.up.railway.app'
   );
 
   static Uri uri(String path) {
@@ -10,4 +10,3 @@ class Api {
     return Uri.parse('$normalizedBase$normalizedPath');
   }
 }
-
