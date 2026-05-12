@@ -12,15 +12,15 @@ class CandidateController extends Controller
     public function index()
     {
         $candidates = Candidate::all()->map(function ($c) {
+            // base64 already stored, return as is
             if ($c->symbol) {
-                $c->symbol = asset(Storage::url($c->symbol));
-            } else {
-                $c->symbol = null;
+                // agar purana path hai (storage wala) to null karo
+                if (!str_starts_with($c->symbol, 'data:')) {
+                    $c->symbol = null;
+                }
             }
-
             return $c;
         });
-
         return response()->json($candidates);
     }
 
@@ -33,23 +33,21 @@ class CandidateController extends Controller
             'symbol' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
-        $imagePath = null;
+        $imageBase64 = null;
 
         if ($request->hasFile('symbol')) {
-
             $file = $request->file('symbol');
-
-            // 🔥 UNIQUE NAME
-            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-
-            // 🔥 STORE
-            $imagePath = $file->storeAs('symbols', $filename, 'public');
+            // 🔥 BASE64 ENCODE
+            $imageData = file_get_contents($file->getRealPath());
+            $base64 = base64_encode($imageData);
+            $mime = $file->getMimeType();
+            $imageBase64 = 'data:' . $mime . ';base64,' . $base64;
         }
 
         $candidate = Candidate::create([
             'name' => $request->name,
             'position' => $request->position,
-            'symbol' => $imagePath,
+            'symbol' => $imageBase64,
             'votes' => 0
         ]);
 
